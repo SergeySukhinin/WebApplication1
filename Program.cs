@@ -15,7 +15,8 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 
 //Middleware 2
 //app.UseMiddleware<MyCustomMiddleware>(); - a call of the function without using an extension method
-app.UseMyCustomMiddleware();    //using Extension method
+//app.UseMyCustomMiddleware();    //using Extension method
+app.UseMyCustomConventionalMiddleware();    //using an extension method of the conventional custom middleware class method
 
 
 //Middleware 3
