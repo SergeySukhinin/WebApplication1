@@ -19,7 +19,8 @@ namespace WebApplication1.Middleware
             //before logic example
             if (httpContext.Request.Query.ContainsKey("firstName") && httpContext.Request.Query.ContainsKey("lastName"))
             {
-                string fullName = httpContext.Request.Query["firstName"] + " " + httpContext.Request.Query["lastName"];
+                string fullName = "Hello from "+httpContext.Request.Query["firstName"]
+                    + " " + httpContext.Request.Query["lastName"];
                 await httpContext.Response.WriteAsync(fullName+"\n");
             }
             await _next(httpContext);

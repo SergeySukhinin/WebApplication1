@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using WebApplication1.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,17 @@ var app = builder.Build();
 //Middleware 1
 app.Use(async (HttpContext context, RequestDelegate next) =>
 {
-    await context.Response.WriteAsync("From Middleware 1\n");
+    await context.Response.WriteAsync("Hello from Middleware 1\n");
     await next(context);
+});
+
+app.UseWhen(context => context.Request.Query.ContainsKey("firstName"), app =>
+{
+    app.Use(async (context, next) =>
+    {
+        await context.Response.WriteAsync("Hello from branch middleware\n");
+        await next();
+    });
 });
 
 //Middleware 2
@@ -18,12 +28,10 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 //app.UseMyCustomMiddleware();    //using Extension method
 app.UseMyCustomConventionalMiddleware();    //using an extension method of the conventional custom middleware class method
 
-
 //Middleware 3
-app.Run(async (HttpContext context) => {
+app.Run(async (context) => {
     //await context.Response.WriteAsync($"{nameof(MyCustomMiddleware)}");
-    await context.Response.WriteAsync("Middleware 3\n");
+    await context.Response.WriteAsync("Hello from middleware 3\n");
 });
-
 
 app.Run();
