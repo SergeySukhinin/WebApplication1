@@ -38,6 +38,7 @@ app.UseEndpoints(endpoints =>
     });
 });*/
 
+#pragma warning disable ASP0014 // Suggest using top level route registrations
 app.UseEndpoints(endpoints =>
 {
     endpoints.Map("files/{filename}.{extension:length(3)=txt}", async context =>          // "=txt" - is the supplied default value with the constraint for length as length=3. Also minlength and maxlength can be used
@@ -80,8 +81,15 @@ app.UseEndpoints(endpoints =>
             int id = Convert.ToInt32(context.Request.RouteValues["id"]);
             string clientType = Convert.ToString(context.Request.RouteValues["client-type"]);
             await context.Response.WriteAsync($"Client: {clientType}, id = {id}");
+        }
+    );
+    endpoints.Map("clients/{client-type}/{id?}",
+        async context =>
+        {
+            await context.Response.WriteAsync("Client type is not acceptable. There are only: physica, business, or corporate types available");
         });
 });
+#pragma warning restore ASP0014 // Suggest using top level route registrations
 
 app.Run(async context =>
 {
