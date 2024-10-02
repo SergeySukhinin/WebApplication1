@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
 using WebApplication1.CustomConstraints;
 using WebApplication1.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args); //without using 
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+{
+    WebRootPath = "mywebroot"
+});
 
 builder.Services.AddRouting(options =>
 {
@@ -13,6 +18,12 @@ builder.Services.AddRouting(options =>
 builder.Services.AddTransient<MyCustomMiddleware>();    //very important to use AddTransient method in order to make the extension method
                                                         // working and being able to get executed
 var app = builder.Build();
+app.UseStaticFiles();   // works with the web root path (either with "wwwroot" or custom name as "mywebroot"-if explicitly described using WebApplicationOptions)
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "mywebroot")) //allows to add additional directories of static files other than one (usually "wwwroot" or custom name as "mywebroot"-if explicitly described using WebApplicationOptions)
+});
 
 app.UseRouting();
 /*
